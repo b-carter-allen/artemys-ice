@@ -227,19 +227,25 @@ def multiple_sanger_analysis(definition_file, output_dir,
             donor = None
 
         if r is not None:
-            tmp = [experiment['Label'], r['ice'], r['ice_d'], r['rsq'], r['hdr_pct'],r['ko_score'], r['guides'],
+            tmp = [experiment['Label'], r['ice'], r['ice_d'], r['rsq'], r['hdr_pct'],r['ko_score'], experiment['Guide Sequence'], r['guides'],
                    r['notes'], experiment['Experiment File'], experiment['Control File'], donor]
         else:
-            tmp = [experiment['Label'], 'Failed', '', '', '', '', '', '', '', '']
+            tmp = [experiment['Label'], 'Failed', '', '', '', '', '', '','', '', '']
         results.append(tmp)
 
     if results:
 
         input_df = pd.DataFrame(results)
         timestamp = '{:%Y-%m-%d-%H%M%S}'.format(datetime.datetime.now())
-        out_file = os.path.join(output_dir, "ice.results.{}.xlsx".format(timestamp))
+        results_outpath = os.path.join(output_dir, "results/")
+        
+        #make results outpath
+        if not os.path.exists(results_outpath):
+            os.makedirs(results_outpath, exist_ok=True)
+        
+        out_file = os.path.join(results_outpath, "ice.results.{}.xlsx".format(timestamp))
 
-        header = ["sample_name", "ice", 'ice_d', "r_squared", "hdr_pct","ko_score", "guides", "notes",
+        header = ["sample_name", "ice", 'ice_d', "r_squared", "hdr_pct","ko_score","Guide Sequence", "guides", "notes",
                   "experiment_file", "control_file", "donor"]
         input_df.columns = header
         # to json
